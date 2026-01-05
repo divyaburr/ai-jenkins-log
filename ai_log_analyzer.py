@@ -21,7 +21,12 @@ Logs:
 """
 
 result = subprocess.run(
-    ["ollama", "run", "phi3", prompt],
+    [
+      r"C:\Users\SYR00347\AppData\Local\Programs\Ollama\ollama.exe",
+      "run",
+      "phi3",
+      prompt
+    ],
     capture_output=True,
     text=True
 )
