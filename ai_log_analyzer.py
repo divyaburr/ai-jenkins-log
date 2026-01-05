@@ -1,11 +1,17 @@
 import subprocess
+import os
 
-with open("build.log", "r", errors="ignore") as f:
-    logs = f.read()[-3000:]
+log_file = "build.log"
+
+if not os.path.exists(log_file):
+    logs = "Jenkins build failed due to non-zero exit code."
+else:
+    with open(log_file, "r", errors="ignore") as f:
+        logs = f.read()[-3000:]
 
 prompt = f"""
 You are a DevOps expert.
-Analyze Jenkins build failure logs.
+Analyze Jenkins failure logs.
 Give:
 1. Root cause
 2. Fix suggestion
@@ -20,6 +26,6 @@ result = subprocess.run(
     text=True
 )
 
-print("\n====== AI BUILD FAILURE ANALYSIS ======\n")
+print("\n=== AI FAILURE ANALYSIS ===\n")
 print(result.stdout)
-print("\n======================================\n")
+print("\n==========================\n")

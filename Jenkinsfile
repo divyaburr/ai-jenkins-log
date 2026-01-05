@@ -25,17 +25,21 @@ pipeline {
     }
 
     post {
-        failure {
-            echo 'Build failed. Running AI failure analysis...'
+    failure {
+        echo 'Build failed. Running AI failure analysis...'
 
-            bat '''
-            copy console.log build.log || echo "No console.log found"
-            python ai_log_analyzer.py
-            '''
-        }
+        bat '''
+        echo Jenkins build failed at %DATE% %TIME% > build.log
+        echo Stage: Force Failure >> build.log
+        echo Reason: Non-zero exit code >> build.log
 
-        always {
-            echo 'Pipeline execution completed.'
-        }
+        python ai_log_analyzer.py
+        '''
     }
+
+    always {
+        echo 'Pipeline execution completed.'
+    }
+}
+
 }
