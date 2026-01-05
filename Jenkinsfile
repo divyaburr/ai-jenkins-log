@@ -13,34 +13,28 @@ pipeline {
             steps {
                 echo 'Running build...'
                 sh 'echo Build started'
-        }
+            }
         }
 
-        /* 🔴 Force failure for testing (remove later) */
+        /* 🔴 Force failure (demo kosam) */
         stage('Force Failure') {
             steps {
                 sh 'exit 1'
             }
         }
-
-        /* 🤖 AI Failure Analysis using Phi */
-        stage('AI Failure Analysis') {
-            when {
-                failure()
-            }
-            steps {
-                sh '''
-                  echo "Collecting Jenkins logs..."
-                  cp $WORKSPACE/console.log build.log || true
-
-                  echo "Running AI analysis..."
-                  python3 ai_log_analyzer.py
-                '''
-            }
-        }
     }
 
+    /* 🤖 FAILURE ayyaka AI analysis */
     post {
+        failure {
+            echo 'Build failed. Running AI failure analysis...'
+
+            sh '''
+              cp $WORKSPACE/console.log build.log || true
+              python3 ai_log_analyzer.py
+            '''
+        }
+
         always {
             echo 'Pipeline execution completed.'
         }
