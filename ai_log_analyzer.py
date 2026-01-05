@@ -24,11 +24,7 @@ Logs:
 
 # 3️⃣ Run Ollama safely (NO hanging, NO unicode crash)
 process = subprocess.Popen(
-    [
-        "ollama",
-        "run",
-        "phi"
-    ],
+    [ r"C:\Users\SYR00347\AppData\Local\Programs\Ollama\ollama.exe", "run", "phi3", prompt ],
     stdin=subprocess.PIPE,
     stdout=subprocess.PIPE,
     stderr=subprocess.PIPE,
