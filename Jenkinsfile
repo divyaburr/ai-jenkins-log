@@ -12,26 +12,25 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Running build...'
-                sh 'echo Build started'
+                bat 'echo Build started'
             }
         }
 
-        /* 🔴 Force failure (demo kosam) */
+        /* 🔴 Intentional failure for demo */
         stage('Force Failure') {
             steps {
-                sh 'exit 1'
+                bat 'exit /b 1'
             }
         }
     }
 
-    /* 🤖 FAILURE ayyaka AI analysis */
     post {
         failure {
             echo 'Build failed. Running AI failure analysis...'
 
-            sh '''
-              cp $WORKSPACE/console.log build.log || true
-              python3 ai_log_analyzer.py
+            bat '''
+            copy console.log build.log || echo "No console.log found"
+            python ai_log_analyzer.py
             '''
         }
 
