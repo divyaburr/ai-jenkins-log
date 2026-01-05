@@ -1,18 +1,20 @@
 import subprocess
 import os
 
-log_file = "build.log"
+LOG_FILE = "build.log"
 
-if not os.path.exists(log_file):
-    logs = "Jenkins build failed due to non-zero exit code."
-else:
-    with open(log_file, "r", errors="ignore") as f:
+# 1️⃣ Read logs safely
+if os.path.exists(LOG_FILE):
+    with open(LOG_FILE, "r", encoding="utf-8", errors="ignore") as f:
         logs = f.read()[-3000:]
+else:
+    logs = "Jenkins build failed due to non-zero exit code."
 
+# 2️⃣ AI Prompt
 prompt = f"""
 You are a DevOps expert.
-Analyze Jenkins failure logs.
-Give:
+
+Analyze the Jenkins failure logs below and provide:
 1. Root cause
 2. Fix suggestion
 
@@ -20,17 +22,27 @@ Logs:
 {logs}
 """
 
-result = subprocess.run(
+# 3️⃣ Run Ollama safely (NO hanging, NO unicode crash)
+process = subprocess.Popen(
     [
-      r"C:\Users\SYR00347\AppData\Local\Programs\Ollama\ollama.exe",
-      "run",
-      "phi3",
-      prompt
+        "ollama",
+        "run",
+        "phi"
     ],
-    capture_output=True,
-    text=True
+    stdin=subprocess.PIPE,
+    stdout=subprocess.PIPE,
+    stderr=subprocess.PIPE,
+    text=True,
+    encoding="utf-8",
+    errors="ignore"
 )
 
+# 4️⃣ Send prompt to model
+process.stdin.write(prompt)
+process.stdin.close()
+
+output = process.stdout.read()
+
 print("\n=== AI FAILURE ANALYSIS ===\n")
-print(result.stdout)
+print(output.strip())
 print("\n==========================\n")
