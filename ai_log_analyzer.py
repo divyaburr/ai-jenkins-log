@@ -22,9 +22,13 @@ Logs:
 {logs}
 """
 
-# 3️⃣ Run Ollama safely (NO hanging, NO unicode crash)
+# 3️⃣ Start Ollama (NO prompt in args)
 process = subprocess.Popen(
-    [ r"C:\Users\SYR00347\AppData\Local\Programs\Ollama\ollama.exe", "run", "phi3", prompt ],
+    [
+        r"C:\Users\SYR00347\AppData\Local\Programs\Ollama\ollama.exe",
+        "run",
+        "phi"
+    ],
     stdin=subprocess.PIPE,
     stdout=subprocess.PIPE,
     stderr=subprocess.PIPE,
@@ -33,11 +37,8 @@ process = subprocess.Popen(
     errors="ignore"
 )
 
-# 4️⃣ Send prompt to model
-process.stdin.write(prompt)
-process.stdin.close()
-
-output = process.stdout.read()
+# 4️⃣ Send prompt ONCE
+output, error = process.communicate(prompt)
 
 print("\n=== AI FAILURE ANALYSIS ===\n")
 print(output.strip())
